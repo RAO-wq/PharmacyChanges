@@ -1,0 +1,24 @@
+form#kt_login_signin_form input, #forgotform input {
+    text-align: right;
+}
+
+div#captchaContainer {
+    text-align: right;
+}
+
+span.ps-inp {
+    left: 50px !important;
+    right: auto !important;
+}
+
+label.error {
+    justify-content: flex-end;
+}
+.text-ar-md {
+    font-family: 'NotoSans-bold';
+    font-size: 14px;
+    margin-top: 0px;
+    line-height: 1;
+    margin-left: 5px;
+    margin-right: 0;
+}

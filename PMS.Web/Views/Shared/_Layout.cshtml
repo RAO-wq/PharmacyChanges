@@ -1,0 +1,738 @@
+﻿@using PMS;
+@using Microsoft.AspNetCore.Mvc.Localization
+@* @inject IViewLocalizer Localizer
+@{
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+} *@
+
+
+
+<form method="post" id="MasterSetup" action="/Admin/MasterSetup">
+    <input type="hidden" name="SetupCode" value="true" />
+    <input type="hidden" name="SetupValue" value="true" />
+    <input type="hidden" name="ParentSetupId" value="true" />
+</form>
+
+<!DOCTYPE html>
+<html lang="en">
+<!--begin::Head-->
+
+<head>
+    <meta charset="utf-8" />
+    <title>Pharmacy</title>
+    <meta name="description" content="Updates and statistics" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <script src="~/assets/js/CommonJS.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!--begin::Fonts-->
+    <link href="~/assets/css/Poppins.css" rel="stylesheet" type="text/css" />
+
+    <!--end::Fonts-->
+    <!--begin::Page Vendors Styles(used by this page)-->
+    <link href="~/assets/css/pages/wizard/wizard-5.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+    <!--end::Page Vendors Styles-->
+    <!--begin::Global Theme Styles(used by all pages)-->
+    <link href="~/assets/plugins/custom/tinymce/skins/ui/oxide/skin.min.css">
+    <link href="~/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/plugins/custom/jstree/jstree.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+
+    <!--end::Global Theme Styles-->
+    <!--begin::Layout Themes(used by all pages)-->
+    <link href="~/assets/css/themes/layout/header/base/light.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/themes/layout/style.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/themes/layout/rtl.css" id="rtl-stylesheet" asp-append-version="true" disabled>
+    <link rel="stylesheet" type="text/css" href="~/assets/css/themes/layout/admin_style.css" id="admin_style" asp-append-version="true" disabled>
+
+    <!--end::Layout Themes-->
+    <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading">
+    <div id="divLoader" style="display:none;">
+        <div class="loader">
+        </div>
+    </div>
+    <!--begin::Main-->
+    <!--begin::Header Mobile-->
+    <div id="kt_header_mobile" class="header-mobile align-items-center  header-mobile-fixed ">
+        <!--begin::Logo-->
+        <a onclick="redirectToDashboard()">
+            @* <img alt="Logo" src="~/assets/media/logos/logo-light.png" /> *@
+            <img alt="Logo" src="~/assets/media/logos/pharmacylogo.png" />
+        </a>
+        <!--end::Logo-->
+        <!--begin::Toolbar-->
+        <div class="d-flex align-items-center">
+            <!--begin::Aside Mobile Toggle-->
+            <button class="btn p-0 burger-icon burger-icon-left" id="kt_aside_mobile_toggle">
+                <span></span>
+            </button>
+            <!--end::Aside Mobile Toggle-->
+            <!--begin::Header Menu Mobile Toggle-->
+            <button class="btn p-0 burger-icon ml-4" id="kt_header_mobile_toggle">
+                <span></span>
+            </button>
+            <!--end::Header Menu Mobile Toggle-->
+            <!--begin::Topbar Mobile Toggle-->
+            <button class="btn btn-hover-text-primary p-0 ml-2" id="kt_header_mobile_topbar_toggle">
+                <i class="flaticon-grid-menu-v2"></i>
+            </button>
+            <!--end::Topbar Mobile Toggle-->
+            <!--begin::Header Menu Mobile Toggle-->
+            <button class="btn p-0 ml-4" id="kt_mobmenu_toggle">
+                <i class="flaticon-menu-2"></i>
+            </button>
+            <!--end::Header Menu Mobile Toggle-->
+        </div>
+        <!--end::Toolbar-->
+    </div>
+
+    <!--end::Header Mobile-->
+    <div class="d-flex flex-column flex-root">
+        <!--begin::Page-->
+        <div class="d-flex flex-row flex-column-fluid page">
+
+            <!--begin::Aside-->
+            <div class="aside aside-left  aside-fixed  d-flex flex-column flex-row-auto" id="kt_aside">
+                <!--begin::Brand-->
+                <div class="brand flex-column-auto " id="kt_brand">
+                    <!--begin::Logo-->
+                    <a onclick="redirectToDashboard()" class="brand-logo">
+                        @* <img alt="Logo" src="~/assets/media/logos/logo-light.png" /> *@
+                        <img alt="Logo" src="~/assets/media/logos/pharmacylogowithoutbg-removebg-preview.png" />
+                    </a>
+                    <button class="btn btn-primary btn-lang" style="display: none" id="toggle-rtl"> <span class="fa fa-globe mr-2"></span> <span class="ltxt"> العربية </span></button>
+                    <!--end::Logo-->
+                </div>
+                <!--end::Brand-->
+                <!--begin::Aside Menu-->
+                <div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
+
+                    <!--begin::Menu Container-->
+                    <div id="kt_aside_menu" class="aside-menu my-4 " data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+                        <ul class="menu-nav ind_menu" id="masterSetup_menus" >
+                            <li class="menu-item">
+                                
+                                <a href="/Home/PatientsList" class="menu-link" style="">
+                                    <div class="d-itm-img"><img src="/assets/icons/dashboard.svg"></div>
+                                    <span class="menu-text">Patients</span></a>
+                            </li>
+                        </ul>
+                        <!--end::Menu Nav-->
+                        <!--end::Menu Nav-->
+                    </div>
+                    <!--end::Menu Container-->
+                </div>
+                <!--end::Aside Menu-->
+            </div>
+            <!--end::Aside-->
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+                <!--begin::Header-->
+                <div id="kt_header" class="header  header-fixed ">
+                    <!--begin::Container-->
+                    <div class=" container-fluid  d-flex align-items-stretch justify-content-between">
+
+                        <div class="row" id="dashtopsec">
+                            <div class="col-sm-12 d-flex align-items-center justify-content-around">
+                                <i id="dashboardTopLeftLogo"></i>
+
+                                <span id="dashboardTopCenterTitle"></span>
+
+                                <span id="dashboardTopRightLogo"></span>
+
+                            </div>
+                        </div>
+
+                        <!--begin::Header Menu Wrapper-->
+                        <div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+                            <!--begin::Header Menu-->
+                            <div id="kt_header_menu" class="header-menu header-menu-mobile  header-menu-layout-default ">
+                            </div>
+                            <!--end::Header Menu-->
+                        </div>
+                        <!--end::Header Menu Wrapper-->
+                        <!--begin::Topbar-->
+                        <div class="topbar">
+                            <!--begin::User-->
+                          
+
+@*                             @await Html.PartialAsync("_InboxIconPartialView.cshtml")
+ *@
+                            <div class="topbar-item">
+                                <div class="d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
+                                    <span class="text-dark font-weight-bolder font-size-base d-none d-md-inline mr-3 text-right"><span id="fullName"> RAO</span><br><p class="m-0 text-dark-50" style="font-size: 10px;" id="userRole">SUPER ADMIN</p></span>
+                                    <span class="symbol symbol-lg-35 symbol-25 symbol-light-success">
+                                        <div class="circle">
+                                            <p class="circle-inner" id="intitals">RA</p>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <!--end::User-->
+                        </div>
+                        <!--end::Topbar-->
+                    </div>
+                    <!--end::Container-->
+                </div>
+                <!--end::Header-->
+                <!--begin::Content-->
+                @RenderBody()
+
+                <!--end::Content-->
+                <!--begin::Footer-->
+                <div class="footer bg-white py-0 d-flex flex-lg-column " id="kt_footer">
+                    <!--begin::Container-->
+                    <div class=" container-fluid  d-flex flex-column flex-md-row align-items-center justify-content-between">
+                        <!--begin::Copyright-->
+                        <div class="text-dark order-2 order-md-1">
+                            <span class="text-muted font-weight-bold mr-2">© 2024</span>
+                            <a href="#" class="text-primary text-hover-secondary">Tawtheeq</a>
+                            <span class="text-muted font-weight-bold mr-2">, All rights reserved.</span>
+                        </div>
+                        <!--end::Copyright-->
+                        <!--begin::Nav-->
+                        <div class="nav nav-dark">
+                            <a href="#" class="nav-link pl-0 pr-5">Privacy policy</a>
+                            <a href="#" class="nav-link pl-0 pr-5">Terms & conditions</a>
+                            <a href="#" class="nav-link pl-0 pr-0">FAQs</a>
+                        </div>
+                        <!--end::Nav-->
+                    </div>
+                    <!--end::Container-->
+                </div>
+                <!--end::Footer-->
+            </div>
+            <!--end::Wrapper-->
+        </div>
+        <!--end::Page-->
+    </div>
+    <!--end::Main-->
+    <!-- begin::User Panel-->
+    <div id="kt_quick_user" class="offcanvas offcanvas-right p-8">
+        <!--begin::Header-->
+        <div class="offcanvas-header d-flex justify-content-between pb-5">
+            <h3 class="font-weight-bold m-0" default-val="user_details">
+                User Details
+            </h3>
+            <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+                <i class="ki ki-close icon-xs text-muted"></i>
+            </a>
+        </div>
+        <!--end::Header-->
+        <!--begin::Content-->
+        <div class="offcanvas-content pr-5 mr-n5">
+            <!--begin::Header-->
+            <div class="d-flex align-items-center mt-5">
+                <div class="symbol symbol-100 mr-5">
+                    <div class="circle">
+                        <p class="circle-inner" id="intitalinner"></p>
+                    </div>
+                    <i class="symbol-badge bg-success"></i>
+                </div>
+                <div class="d-flex flex-column">
+                    <a href="#" id="userName" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">
+
+                    </a>
+                    <div class="text-muted mt-1" id="companyType">
+                        Lessor
+                    </div>
+                    <div class="navi mt-2">
+                        <a href="#" class="navi-item">
+                            <span class="navi-link p-0 pb-2">
+                                <i class="la la-envelope text-primary mr-2"></i>
+                                <span class="navi-text text-muted text-hover-primary" id="userEmail">rao@gmail.com</span>
+                            </span>
+                        </a>
+                        <a id="logoutButton" class="btn btn-sm btn-secondary font-weight-bolder py-2 px-3" default-val="logout"> Log Out<i class="flaticon-logout"></i></a>
+
+                        @* <a asp-controller="Home" asp-action="Logout" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Log Out</a> *@
+
+                    </div>
+                </div>
+            </div>
+            <!--end::Header-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed mt-8 mb-5"></div>
+            <!--end::Separator-->
+
+            <div class="usr-conect">
+                <p><a default-val="my_profile" onclick="@("window.location.href='" + @Url.Action("PersonalInformation", "Account") + "'");" style="cursor: pointer;display:flex;align-items:center;">My Profile<i class="la la-user mr-3"></i></a></p>
+            </div>
+
+            <!--begin::Separator-->
+            <div class="separator separator-dashed my-5"></div>
+            <!--end::Separator-->
+
+            <div class="usr-conect">
+                <p><a onclick="@("window.location.href='" + @Url.Action("InboxNotification", "ContractManagement") + "'");" style="cursor: pointer;display:flex;align-items:center;" default-val="inbox"> Inbox<i class="la la-envelope mr-3"></i></a></p>
+            </div>
+        </div>
+        <!--end::Content-->
+    </div>
+    <!-- end::User Panel-->
+    <!--begin::Scrolltop-->
+    <div id="kt_scrolltop" class="scrolltop">
+        <span class="svg-icon">
+            <!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
+                 viewBox="0 0 24 24" version="1.1">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <polygon points="0 0 24 0 24 24 0 24" />
+                    <rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+                    <path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z"
+                          fill="#000000" fill-rule="nonzero" />
+                </g>
+            </svg>
+            <!--end::Svg Icon-->
+        </span>
+    </div>
+    <!--end::Scrolltop-->
+    <!--begin::Global Config(global config for global JS scripts)-->
+
+    <script>
+        sessionStorage.setItem("LoadingCount", 0);
+        // var intervalValid = window.setInterval(function () {
+        //     if(isTokenExpired()) {
+        //         clearInterval(intervalValid);
+        //         showSessionExpiredModal();
+        //     }
+        // }, 1000);
+
+        // Retrieve companyType from sessionStorage
+      
+
+        function redirectToDashboard() {
+            debugger
+            // Redirect to the "account/dashboard" path
+            // Construct the absolute URL based on the current base URL
+            var currentBaseUrl = window.location.origin + "/account";
+            window.location.href = currentBaseUrl + "/dashboard";
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            debugger
+            logoutUser();
+            //clearSessionStorageAndRedirect();
+            //clearSessionStorageAndLogout();
+        });
+
+
+
+
+
+       
+
+       
+        // Add more conditions as needed
+
+
+        var KTAppSettings = {
+            "breakpoints": {
+                "sm": 576,
+                "md": 768,
+                "lg": 992,
+                "xl": 1200,
+                "xxl": 1400
+            },
+            "colors": {
+                "theme": {
+                    "base": {
+                        "white": "#ffffff",
+                        "primary": "#55849B",
+                        "secondary": "#E5EAEE",
+                        "success": "#1BC5BD",
+                        "info": "#8950FC",
+                        "warning": "#FFA800",
+                        "danger": "#F64E60",
+                        "light": "#E4E6EF",
+                        "dark": "#181C32"
+                    },
+                    "light": {
+                        "white": "#ffffff",
+                        "primary": "#55849B",
+                        "secondary": "#EBEDF3",
+                        "success": "#C9F7F5",
+                        "info": "#EEE5FF",
+                        "warning": "#FFF4DE",
+                        "danger": "#FFE2E5",
+                        "light": "#F3F6F9",
+                        "dark": "#D6D6E0"
+                    },
+                    "inverse": {
+                        "white": "#ffffff",
+                        "primary": "#55849B",
+                        "secondary": "#3F4254",
+                        "success": "#ffffff",
+                        "info": "#ffffff",
+                        "warning": "#ffffff",
+                        "danger": "#ffffff",
+                        "light": "#464E5F",
+                        "dark": "#ffffff"
+                    }
+                },
+                "gray": {
+                    "gray-100": "#F3F6F9",
+                    "gray-200": "#EBEDF3",
+                    "gray-300": "#E4E6EF",
+                    "gray-400": "#D1D3E0",
+                    "gray-500": "#B5B5C3",
+                    "gray-600": "#7E8299",
+                    "gray-700": "#5E6278",
+                    "gray-800": "#3F4254",
+                    "gray-900": "#181C32"
+                }
+            },
+            "font-family": "Poppins"
+        };
+
+        var cookieName = '.AspNetCore.Culture';
+        var languageCookie = document.cookie.match('(^|;)\\s*' + cookieName + '\\s*=\\s*([^;]+)');
+        if (languageCookie) {
+            var languageValue = languageCookie[2].split('|')[0];
+            var language = languageValue.includes('ar') ? 'ar' : 'en';
+        }
+
+        function setupMenu(code, name, parentid) {
+
+            document.forms['MasterSetup']['SetupCode'].value = code;
+            document.forms['MasterSetup']['SetupValue'].value = name;
+            sessionStorage.setItem("SetupName", name)
+            document.forms['MasterSetup']['ParentSetupId'].value = parentid;
+
+            PostRedirect("MasterSetup", 0)
+        }
+
+    </script>
+    <!--end::Global Config-->
+    <!--begin::Global Theme Bundle(used by all pages)-->
+    <script language="JavaScript" type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="~/assets/plugins/custom/prismjs/prismjs.bundle.js"></script>
+    <script src="~/assets/js/scripts.bundle.js"></script>
+    <!--end::Global Theme Bundle-->
+    <!--begin::Page Vendors(used by this page)-->
+    <script src="~/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <!--end::Page Vendors-->
+    <!--begin::Page Scripts(used by this page)-->
+    <script src="~/assets/js/pages/widgets.js"></script>
+    <!--end::Page Scripts-->
+    <!--begin::Page Scripts(used by this page)-->
+    <script src="~/assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
+    <script src="~/assets/plugins/custom/jstree/jstree.bundle.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <!--end::Page Scripts-->
+    <script>
+        $(document).ready(function () {
+            debugger
+            var role = sessionStorage.getItem("role");
+            var adminStylesheet = $('#admin_style');
+            var rtlStylesheet = $('#rtl-stylesheet');
+            if (role == "Super Admin") {
+                adminStylesheet.prop('disabled', false);
+                $('#toggle-rtl').css('display', 'none');
+                rtlStylesheet.prop('disabled', true);
+                localStorage.setItem('languageId', 0);
+            }
+            else {
+                adminStylesheet.prop('disabled', true);
+                $('#toggle-rtl').css('display', 'flex');
+                $('#toggle-rtl').click(function () {
+                    if (rtlStylesheet.prop('disabled')) {
+                        rtlStylesheet.prop('disabled', false);
+                        $('#toggle-rtl span.ltxt').text('EN');
+                        sessionStorage.setItem("LangP", false);
+                        localStorage.setItem('languageId', 1);
+                    }
+                    else {
+                        rtlStylesheet.prop('disabled', true);
+                        $('#toggle-rtl span.ltxt').text('العربية');
+                        sessionStorage.setItem("LangP", true);
+                        localStorage.setItem('languageId', 0);
+                    }
+                    location.reload();
+                });
+
+                changeLangToggleText();
+            }
+
+
+            var setupname = sessionStorage.getItem("SetupName");
+            var myString = $(location).attr('pathname');
+            var myStringArray = myString.split('/');
+            $('[href]').filter(function () {
+                return $(this).attr('href') === myString;
+            }).parent().addClass('menu-item-active');
+
+            //==========
+
+            $('[href]').filter(function () {
+                return $(this).attr('href') === myString;
+            }).parents('li.menu-item.menu-item-submenu').addClass('menu-item-open');
+
+
+            if (setupname == null) {
+                $('li[aria-haspopup="true"] > a > span:contains("Master Setup")').closest('li').removeClass('menu-item-active')
+                $('li[aria-haspopup="true"] > a > span:contains("Master Setup")').closest('li.menu-item.menu-item-submenu').removeClass('menu-item-open')
+            }
+
+            var $menuContainer = $("#kt_aside_menu");
+            var $activeMenuItem = $(".menu-item-active"); // You should replace "active" with the class you use for the active item.
+
+            if ($activeMenuItem.length) {
+                // Calculate the position of the active menu item within the container
+                var containerTop = $menuContainer.offset().top;
+                var itemTop = $activeMenuItem.offset().top;
+
+                // Calculate the scroll position
+                var scrollTop = itemTop - containerTop;
+
+                // Scroll the container to the active item
+                $menuContainer.scrollTop(scrollTop);
+            }
+            localized();
+        });
+
+    </script>
+
+    <script>
+        // The DOM element you wish to replace with Tagify
+        var input = document.querySelector('input[name=tags]');
+
+        // initialize Tagify on the above input node reference
+        new Tagify(input)
+
+
+
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+        }
+
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+        }
+
+        function set_unset_ActiveMenuItem(nameAfterSecondSlash, setupname, pathname) {
+            if (nameAfterSecondSlash == 'MasterSetup') {
+                $('[id="MatchName"]').filter(function () {
+                    console.log($(this).text()); // Log the text content
+                    return $(this).text() === setupname; // Compare text content with setupname
+                }).parents('li.menu-item').addClass('menu-item-active');
+
+
+                //==========
+
+                $('[id="MatchName"]').filter(function () {
+                    return $(this).text() === setupname;
+                }).parents('li.menu-item.menu-item-submenu').addClass('menu-item-open');
+            }
+
+            else {
+
+                $('[href]').filter(function () {
+                    return $(this).attr('href') === pathname;
+                }).parent().addClass('menu-item-active');
+
+                //==========
+
+                $('[href]').filter(function () {
+                    return $(this).attr('href') === pathname;
+                }).parents('li.menu-item.menu-item-submenu').addClass('menu-item-open');
+            }
+
+
+            if (setupname == null) {
+                $('li[aria-haspopup="true"] > a > span:contains("Master Setup")').closest('li').removeClass('menu-item-active')
+                $('li[aria-haspopup="true"] > a > span:contains("Master Setup")').closest('li.menu-item.menu-item-submenu').removeClass('menu-item-open')
+            }
+        }
+
+        $(document).ready(function () {
+
+            $(document).off('click', '#masterSetup_menus li');
+            $(document).on('click', '#masterSetup_menus li', function () {
+                var clickedMenuItemText = $(this).text();
+                var menuEntities = JSON.parse(sessionStorage.getItem("MasterSetupAtLayout"));
+                function containsEntity(value) {
+                    return menuEntities.some(item => item.hasOwnProperty('entityName') && item['entityName'] === value);
+                }
+
+                if (containsEntity(clickedMenuItemText)) {
+                    debugger
+                    sessionStorage.setItem('currentMenuItem', clickedMenuItemText);
+                    var currJourney = sessionStorage.getItem("UserStory");
+                    if (currJourney == null) {
+                        var action = { EntityName: clickedMenuItemText, EventType: 'NAVIGATE' }
+                        var arr = [];
+                        arr.push(action);
+
+                        sessionStorage.setItem("UserStory", JSON.stringify(arr))
+                    }
+                    else {
+                        var arr = JSON.parse(currJourney);
+                        arr.push({ EntityName: clickedMenuItemText, EventType: 'NAVIGATE' });
+                        sessionStorage.setItem("UserStory", JSON.stringify(arr))
+                    }
+                }
+            });
+
+            $(document).off('click', '#masterSetup_menus li div ul li');
+            $(document).on('click', '#masterSetup_menus li div ul li', function () {
+                var clickedMenuItemText = $(this).text();
+                var menuEntities = JSON.parse(sessionStorage.getItem("MasterSetupAtLayout"));
+                function containsEntity(value) {
+                    return menuEntities.some(item =>
+                        item.tabs.some(submenu =>
+                            submenu.hasOwnProperty('entityName') && submenu['entityName'] === value
+                        )
+                    );
+                }
+
+                if (containsEntity(clickedMenuItemText)) {
+                    debugger
+                    sessionStorage.setItem('currentMenuItem', clickedMenuItemText);
+                    var currJourney = sessionStorage.getItem("UserStory");
+                    if (currJourney == null) {
+                        var action = { EntityName: clickedMenuItemText, EventType: 'NAVIGATE' }
+                        var arr = [];
+                        arr.push(action);
+
+                        sessionStorage.setItem("UserStory", JSON.stringify(arr))
+                    }
+                    else {
+                        var arr = JSON.parse(currJourney);
+                        arr.push({ EntityName: clickedMenuItemText, EventType: 'NAVIGATE' });
+                        sessionStorage.setItem("UserStory", JSON.stringify(arr))
+                    }
+                }
+            });
+
+            debugger;
+            // GetMenuEntity();
+            var data = getSetupsFromSessionStorage();
+            if (data != null) {
+                var setups = JSON.parse(data);
+                generateMenuHTML(setups);
+                var setupname = sessionStorage.getItem("SetupName");
+                var myString = $(location).attr('pathname');
+                //var myStringArray = myString.split('/');
+                //var nameAfterSecondSlash = myStringArray[2];
+
+                for (let i = 0; i < setups.length; i++) {
+                    var isItemSavedInStorage = false;
+
+                    if (isItemSavedInStorage) {
+                        break;
+                    }
+
+                    var toCheck = myString.toLowerCase();
+
+                    if (setups[i].entityUrl != null) {
+                        var menuEntity = setups[i].entityUrl.toLowerCase();
+                    }
+
+                    if (menuEntity === toCheck) {
+                        sessionStorage.setItem('menuSelection', setups[i].entityUrl);
+                        break;
+                    }
+
+                    var menuEntityTabs = setups[i].tabs;
+                    if (menuEntityTabs.length > 0) {
+                        for (let j = 0; j < menuEntityTabs.length; j++) {
+
+                            var tabEntity = menuEntityTabs[j].entityUrl.toLowerCase();
+                            if (tabEntity === toCheck) {
+                                sessionStorage.setItem('menuSelection', menuEntityTabs[j].entityUrl);
+                                isItemSavedInStorage = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (myString === '/ContractManagement/InboxNotification' || myString === '/Account/PersonalInformation') {
+                    sessionStorage.setItem('menuSelection', undefined);
+                }
+
+                var pathToSelect = sessionStorage.getItem('menuSelection');
+                var pathArray = pathToSelect != null ? pathToSelect.split('/') : [];
+                var nameAfterSecondSlash = pathArray[2];
+
+                set_unset_ActiveMenuItem(nameAfterSecondSlash, setupname, pathToSelect);
+
+                var $menuContainer = $("#kt_aside_menu");
+                var $activeMenuItem = $(".menu-item-active"); // You should replace "active" with the class you use for the active item.
+
+                if ($activeMenuItem.length) {
+                    // Calculate the position of the active menu item within the container
+                    var containerTop = $menuContainer.offset().top;
+                    var itemTop = $activeMenuItem.offset().top;
+
+                    // Calculate the scroll position
+                    var scrollTop = itemTop - containerTop;
+
+                    // Scroll the container to the active item
+                    $menuContainer.scrollTop(scrollTop);
+                }
+            }
+            else {
+                GetMenuEntity();
+            }
+
+
+        });
+    </script>
+
+
+    <script>
+        // Global handler for AJAX complete to catch all 401 Unauthorized responses
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            var requestUrl = settings.url; // Get the request URL
+            console.log("Request URL:", requestUrl);
+            var newAccessToken = xhr.getResponseHeader('AccessToken');
+            if (xhr.status === 401) {
+                sessionStorage.clear(); // Clear session storage or any relevant data
+                showSessionExpiredModal(); // Show session expired modal or redirect to login
+            } else if (xhr.status === 403) {
+                alert('Access Denied: You do not have permission to access this resource.');
+            }
+            else {
+                sessionStorage.setItem("token", newAccessToken);
+                console.log(requestUrl + "  ///  " + newAccessToken)
+            }
+        });
+
+        // Get references to the button and div
+        var bttn = document.getElementById('kt_mobmenu_toggle');
+        var asidesDiv = document.getElementById('kt_aside');
+
+        // Add click event listener to the button
+        bttn.addEventListener('click', function () {
+            // Toggle left property between 15px and 0px
+            asidesDiv.style.left = (asidesDiv.style.left === '15px') ? '-300px' : '15px';
+        });
+    </script>
+
+
+</body>
+<!--end::Body-->
+
+</html>

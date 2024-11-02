@@ -1,0 +1,14 @@
+
+.form-group label {
+    display: flex;
+}
+
+button.btn-lang {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+a.brand-logo img {
+    width: 33%;
+}
